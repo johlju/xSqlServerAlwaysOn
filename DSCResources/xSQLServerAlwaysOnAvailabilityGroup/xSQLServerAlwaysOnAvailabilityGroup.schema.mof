@@ -1,0 +1,14 @@
+﻿
+[ClassVersion("1.0.0.0"), FriendlyName("xSQLServerAlwaysOnAvailabilityGroup")]
+class xSQLServerAlwaysOnAvailabilityGroup : OMI_BaseResource
+{
+    [Key, Description("The SQL Server instance name of the primary replica.")] String InstanceName;
+    [Required, Description("The host name or FQDN of the primary replica.")] String NodeName;
+    [Key, Description("The name of the availability group.")] String Name;
+    [Write, Description("If the availability group should be present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Write, Description("The availability mode for the primary replica"), ValueMap{"SynchronousCommit","AsynchronousCommit"}, Values{"SynchronousCommit","AsynchronousCommit"}] String AvailabilityMode;
+    [Write, Description("The failover mode for the primary replica"), ValueMap{"Automatic","Manual"}, Values{"Automatic","Manual"}] String FailoverMode;
+    [Write, Description("The length of time, in milliseconds, after which the availability group declares an unresponsive server to be unhealthy.")] UInt32 HealthCheckTimeout;
+    [Write, Description("The automatic failover behavior of the availability group"), ValueMap{"OnServerDown","OnServerUnresponsive","OnCriticalServerErrors","OnModerateServerErrors","OnAnyQualifiedFailureCondition"}, Values{"OnServerDown","OnServerUnresponsive","OnCriticalServerErrors","OnModerateServerErrors","OnAnyQualifiedFailureCondition"}] String FailureConditionLevel;
+};
+

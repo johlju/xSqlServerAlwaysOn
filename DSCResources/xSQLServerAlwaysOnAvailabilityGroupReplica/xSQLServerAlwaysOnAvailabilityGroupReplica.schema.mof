@@ -1,0 +1,15 @@
+﻿
+[ClassVersion("1.0.0.0"), FriendlyName("xSQLServerAlwaysOnAvailabilityGroupReplica")]
+class xSQLServerAlwaysOnAvailabilityGroupReplica : OMI_BaseResource
+{
+    [Key, Description("The SQL Server instance name of the secondary replica.")] String InstanceName;
+    [Key, Description("The host name or FQDN of the secondary replica.")] String NodeName;
+    [Required, Description("The SQL Server instance name of the primary replica.")] String PrimaryReplicaInstanceName;
+    [Required, Description("The host name or FQDN of the primary replica.")] String PrimaryReplicaNodeName;
+    [Key, Description("The name of the availability group to which the secondary replica is or will be connected.")] String AvailabilityGroup;
+    [Write, Description("If the secondary replica should be present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Write, Description("The availability mode for the secondary replica."), ValueMap{"SynchronousCommit","AsynchronousCommit"}, Values{"SynchronousCommit","AsynchronousCommit"}] String AvailabilityMode;
+    [Write, Description("The failover mode for the secondary replica."), ValueMap{"Automatic","Manual"}, Values{"Automatic","Manual"}] String FailoverMode;
+    [Write, Description("If the primary replica has not responded, or can not be verified to be the primary replica within this time period, an error will be thrown.")] UInt16 Timeout;
+};
+
