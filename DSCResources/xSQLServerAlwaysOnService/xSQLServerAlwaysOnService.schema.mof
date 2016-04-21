@@ -1,0 +1,9 @@
+﻿
+[ClassVersion("1.0.0.0"), FriendlyName("xSQLServerAlwaysOnService")]
+class xSQLServerAlwaysOnService : OMI_BaseResource
+{
+    [Key, Description("The SQL Server instance name.")] String InstanceName;
+    [Required, Description("The host name or FQDN.")] String NodeName;
+    [Write, Description("If Always On should be present (enabled) or absent (disabled)."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
+
