@@ -1,0 +1,12 @@
+﻿
+[ClassVersion("1.0.0.0"), FriendlyName("xSQLServerAlwaysOnEndpoint")]
+class xSQLServerAlwaysOnEndpoint : OMI_BaseResource
+{
+    [Key, Description("The SQL Server instance name.")] String InstanceName;
+    [Required, Description("The host name or FQDN.")] String NodeName;
+    [Write, Description("If the endpoint should be present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Required, Description("The name of the endpoint.")] String Name;
+    [Write, Description("The network port the endpoint is listening on. Default value is 5022.")] Uint16 Port;
+    [Write, Description("The network IP address the endpoint is listening on. Default the endpoint will listen on all valid IP addresses.")] String IpAddress;
+};
+
