@@ -28,7 +28,7 @@ Configuration SQLAlwaysOnNodeConfig
         [PsCredential]$SqlAdministratorCredential
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource –ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName xSqlServerAlwaysOn -ModuleVersion 1.0.0.0
 
     Node $AllNodes.Where{ $_.Role -eq "PrimaryReplica" }.NodeName
@@ -73,5 +73,5 @@ Configuration SQLAlwaysOnNodeConfig
     }
 }
 
-$SqlAdministratorCredential = Get-Credential -Message "Enter credentials for SQL Administrator"
-SQLAlwaysOnNodeConfig -SqlAdministratorCredential $SqlAdministratorCredential -ConfigurationData $ConfigData -OutputPath 'C:\Configuration'
+$sqlAdminCredentials = Get-Credential -Message "Enter credentials for SQL Administrator"
+SQLAlwaysOnNodeConfig -SqlAdministratorCredential $sqlAdminCredentials -ConfigurationData $ConfigData -OutputPath 'C:\Configuration'
