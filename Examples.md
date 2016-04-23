@@ -30,7 +30,7 @@ deploy.company.local | Holds the configuration and used to push the configuratio
 This can all be the same account, but different account are used to show a more complex example (and more how it could look in production)
 
 Domain account | Prerequisites permissions/rights | These permissions/rights are configured by DSC (listed here for information)
----|---
+--- | --- | ---
 Cluster Administrator | Must have local administrator right on all the nodes. | -
 SQL Install |  Must have local administrator right on all the nodes, also needs to have read access to the share where the SQL Server installation media are staged. | - 
 SQL Administrator | - | Must have sysadmin rights to the SQL Server instances. | -
@@ -39,7 +39,7 @@ SQL Service Secondary | Normal domain user account with no special rights.|
 
 ### Active Directory Organizational Unit
 OU | Description | Security
---- | ---
+--- | --- | ---
 Cluster Computer Objects | Organizational unit where CNO's are prestaged and VCO will be automatically created by CNO's. | The security group **Create Cluster Virtual Computer Objects** must have the permission **Create Computer Objects**. 
 
 ### Prestaged computer accounts
@@ -53,7 +53,7 @@ SQLCLU01 | Cluster Computer Objects
 
 ### Domain groups
 Domain security group | Members | Permssion
----|---
+--- | --- | ---
 Create Cluster Virtual Computer Objects | SQLCLU01 | The group must have permission to **Create Computer Objects** on the Active Directory organizational unit **Cluster Computer Objects**. 
 SQL Administrators | *your personal administrator account* | Used by DSC to give additional administrator sysadmin permission on the SQL instances. 
 
@@ -69,7 +69,7 @@ And the public certificate needs to be exported and placed in a folder on the pu
 **Folder structure under share:** See table below
 
 Folder name | Permission | Contains
---- | ---
+--- | --- | ---
 SQL2014SP1 | SQL Install must have read permission | SQL Server 2014 installation media
 Win2k12R2\Sources\Sxs | Everyone must have read permission. *Note: Realized now, at the time of writing this, that I never check what permssion is actually needed* | sxs folder from the Windows Server 2012 R2 installation media.
 Modules | Everyone must have read permission. *Note: I haven't gotten LCM Credential property to work in Push mode yet* | The required modules needed for the configuration. 
@@ -85,7 +85,7 @@ Modules | Everyone must have read permission. *Note: I haven't gotten LCM Creden
 Beside the obvious module xSqlServerAlwaysOn, the following modules are needed. Download the modules from GitHub. 
 
 Module | Version | URL
---- | ---
+--- | --- | ---
 xSqlServer | 1.5.0.0 | Find it here https://github.com/PowerShell/xSQLServer
 xFailOverCluster | 1.1.1 |  Find it here https://github.com/PowerShell/xFailOverCluster. 
 
