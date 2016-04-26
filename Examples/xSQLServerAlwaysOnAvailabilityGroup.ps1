@@ -3,6 +3,7 @@
         @{
             NodeName= "*"
             CertificateFile = "C:\Certificates\dsc-public.cer" 
+            Thumbprint = "D6F57B6BE46A7162138687FB74DBAA1D4EB1A59B" 
             SqlInstanceName = "MSSQLSERVER" # Default instance
             PSDscAllowDomainUser = $true
         },
@@ -57,14 +58,30 @@ Configuration SQLAlwaysOnNodeConfig
             PsDscRunAsCredential = $SqlAdministratorCredential
         }
 
+        # Remove availability groups which was added above
+
         xSQLServerAlwaysOnAvailabilityGroup RemoveAvailabilityGroup
         {
             Ensure = "Absent"
             NodeName = $Node.NodeName
             InstanceName = $Node.SqlInstanceName
-            Name = "AvailabilityGroup-03"
+            Name = "AG-01"
 
             PsDscRunAsCredential = $SqlAdministratorCredential
+            
+            DependsOn = "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroupForSynchronousCommitAndAutomaticFailover"
+        }
+
+        xSQLServerAlwaysOnAvailabilityGroup RemoveAvailabilityGroup
+        {
+            Ensure = "Absent"
+            NodeName = $Node.NodeName
+            InstanceName = $Node.SqlInstanceName
+            Name = "AvailabilityGroup-02"
+
+            PsDscRunAsCredential = $SqlAdministratorCredential
+
+            DependsOn = "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroupForAsynchronousCommitAndManualFailover"
         }
     }
 
@@ -73,5 +90,9 @@ Configuration SQLAlwaysOnNodeConfig
     }
 }
 
-$SqlAdministratorCredential = Get-Credential -Message "Enter credentials for SQL Administrator"
-SQLAlwaysOnNodeConfig -SqlAdministratorCredential $SqlAdministratorCredential -ConfigurationData $ConfigData -OutputPath 'C:\Configuration'
+$SqlAdministratorCredential = Get-Credential -Message "Enter credentials for SQL Server administrator account"
+
+SQLAlwaysOnNodeConfig `
+    -SqlAdministratorCredential $SqlAdministratorCredential `
+    -ConfigurationData $ConfigData `
+    -OutputPath 'C:\Configuration'

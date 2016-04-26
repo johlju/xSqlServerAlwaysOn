@@ -1,5 +1,4 @@
-
-$ConfigData = @{
+﻿$ConfigData = @{
     AllNodes = @(
         @{
             NodeName= "*"
@@ -265,7 +264,7 @@ Configuration SQLAlwaysOnNodeConfig
             NodeName = $Node.NodeName
             InstanceName = $Node.SqlInstanceName
 
-            PsDscRunAsCredential = $SqlInstallCredential  # Works without this (as SYSTEM). Automatic RunAs support; https://msdn.microsoft.com/en-us/powershell/wmf/dsc_runas
+            PsDscRunAsCredential = $SqlInstallCredential
 
             DependsOn = "[xSQLServerMaxDop]SQLConfigureMaxDop"
         }
