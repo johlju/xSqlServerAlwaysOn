@@ -32,61 +32,56 @@ Configuration SQLAlwaysOnNodeConfig
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName xSqlServerAlwaysOn -ModuleVersion 1.0.0.0
 
-    Node $AllNodes.Where{ $_.Role -eq "PrimaryReplica" }.NodeName
+    Node $AllNodes.Where{$_.Role -eq "PrimaryReplica" }.NodeName
     {
-        xSQLServerAlwaysOnAvailabilityGroup AvailabilityGroupForSynchronousCommitAndAutomaticFailover
+        xSQLServerAlwaysOnEndpoint SQLConfigureAlwaysOnEndpoint
         {
             Ensure = "Present"
             NodeName = $Node.NodeName
             InstanceName = $Node.SqlInstanceName
-            Name = "AG-01"
-            AvailabilityMode = 'SynchronousCommit'
-            FailoverMode = 'Automatic'
+            Name = "DefaultMirrorEndpoint"
 
             PsDscRunAsCredential = $SqlAdministratorCredential
         }
 
-        xSQLServerAlwaysOnAvailabilityGroup AvailabilityGroupForAsynchronousCommitAndManualFailover
-        {
-            Ensure = "Present"
-            NodeName = $Node.NodeName
-            InstanceName = $Node.SqlInstanceName
-            Name = "AvailabilityGroup-02"
-            AvailabilityMode = 'AsynchronousCommit'
-            FailoverMode = 'Manual'
-
-            PsDscRunAsCredential = $SqlAdministratorCredential
-        }
-
-        # Remove availability groups which was added above
-
-        xSQLServerAlwaysOnAvailabilityGroup RemoveAvailabilityGroup
+        # Remove the endpoint
+        xSQLServerAlwaysOnEndpoint RemoveSQLConfigureAlwaysOnEndpoint
         {
             Ensure = "Absent"
             NodeName = $Node.NodeName
             InstanceName = $Node.SqlInstanceName
-            Name = "AG-01"
-
-            PsDscRunAsCredential = $SqlAdministratorCredential
-            
-            DependsOn = "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroupForSynchronousCommitAndAutomaticFailover"
-        }
-
-        xSQLServerAlwaysOnAvailabilityGroup RemoveAvailabilityGroup
-        {
-            Ensure = "Absent"
-            NodeName = $Node.NodeName
-            InstanceName = $Node.SqlInstanceName
-            Name = "AvailabilityGroup-02"
+            Name = "DefaultMirrorEndpoint"
 
             PsDscRunAsCredential = $SqlAdministratorCredential
 
-            DependsOn = "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroupForAsynchronousCommitAndManualFailover"
+            DependsOn = "[xSQLServerAlwaysOnEndpoint]SQLConfigureAlwaysOnEndpoint" 
         }
     }
 
     Node $AllNodes.Where{ $_.Role -eq "SecondaryReplica" }.NodeName
     {         
+        xSQLServerAlwaysOnEndpoint SQLConfigureAlwaysOnEndpoint
+        {
+            Ensure = "Present"
+            NodeName = $Node.NodeName
+            InstanceName = $Node.SqlInstanceName
+            Name = "DefaultMirrorEndpoint"
+
+            PsDscRunAsCredential = $SqlAdministratorCredential
+        }
+        
+        # Remove the endpoint 
+        xSQLServerAlwaysOnEndpoint RemoveSQLConfigureAlwaysOnEndpoint
+        {
+            Ensure = "Absent"
+            NodeName = $Node.NodeName
+            InstanceName = $Node.SqlInstanceName
+            Name = "DefaultMirrorEndpoint"
+
+            PsDscRunAsCredential = $SqlAdministratorCredential
+
+            DependsOn = "[xSQLServerAlwaysOnEndpoint]SQLConfigureAlwaysOnEndpoint" 
+        }
     }
 }
 

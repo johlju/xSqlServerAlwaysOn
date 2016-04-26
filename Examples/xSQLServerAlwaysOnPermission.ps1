@@ -32,61 +32,61 @@ Configuration SQLAlwaysOnNodeConfig
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName xSqlServerAlwaysOn -ModuleVersion 1.0.0.0
 
-    Node $AllNodes.Where{ $_.Role -eq "PrimaryReplica" }.NodeName
+    Node $AllNodes.Where{$_.Role -eq "PrimaryReplica" }.NodeName
     {
-        xSQLServerAlwaysOnAvailabilityGroup AvailabilityGroupForSynchronousCommitAndAutomaticFailover
+        xSQLServerAlwaysOnPermission SQLConfigureAlwaysOnPermissionHealthDetectionAccount
         {
             Ensure = "Present"
             NodeName = $Node.NodeName
             InstanceName = $Node.SqlInstanceName
-            Name = "AG-01"
-            AvailabilityMode = 'SynchronousCommit'
-            FailoverMode = 'Automatic'
+            Principal = "NT AUTHORITY\SYSTEM" 
+            Permission = "ALTER ANY AVAILABILITY GROUP","VIEW SERVER STATE"
 
             PsDscRunAsCredential = $SqlAdministratorCredential
         }
 
-        xSQLServerAlwaysOnAvailabilityGroup AvailabilityGroupForAsynchronousCommitAndManualFailover
-        {
-            Ensure = "Present"
-            NodeName = $Node.NodeName
-            InstanceName = $Node.SqlInstanceName
-            Name = "AvailabilityGroup-02"
-            AvailabilityMode = 'AsynchronousCommit'
-            FailoverMode = 'Manual'
-
-            PsDscRunAsCredential = $SqlAdministratorCredential
-        }
-
-        # Remove availability groups which was added above
-
-        xSQLServerAlwaysOnAvailabilityGroup RemoveAvailabilityGroup
+        # Remove permission
+        xSQLServerAlwaysOnPermission RemoveSQLConfigureAlwaysOnPermissionHealthDetectionAccount
         {
             Ensure = "Absent"
             NodeName = $Node.NodeName
             InstanceName = $Node.SqlInstanceName
-            Name = "AG-01"
-
-            PsDscRunAsCredential = $SqlAdministratorCredential
-            
-            DependsOn = "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroupForSynchronousCommitAndAutomaticFailover"
-        }
-
-        xSQLServerAlwaysOnAvailabilityGroup RemoveAvailabilityGroup
-        {
-            Ensure = "Absent"
-            NodeName = $Node.NodeName
-            InstanceName = $Node.SqlInstanceName
-            Name = "AvailabilityGroup-02"
+            Principal = "NT AUTHORITY\SYSTEM" 
+            Permission = "ALTER ANY AVAILABILITY GROUP","VIEW SERVER STATE"
 
             PsDscRunAsCredential = $SqlAdministratorCredential
 
-            DependsOn = "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroupForAsynchronousCommitAndManualFailover"
+            DependsOn = "[xSQLServerAlwaysOnPermission]SQLConfigureAlwaysOnPermissionHealthDetectionAccount"
         }
     }
 
     Node $AllNodes.Where{ $_.Role -eq "SecondaryReplica" }.NodeName
     {         
+
+        xSQLServerAlwaysOnPermission SQLConfigureAlwaysOnPermissionHealthDetectionAccount
+        {
+            Ensure = "Present"
+            NodeName = $Node.NodeName
+            InstanceName = $Node.SqlInstanceName
+            Principal = "NT AUTHORITY\SYSTEM" 
+            Permission = "ALTER ANY AVAILABILITY GROUP","VIEW SERVER STATE"
+
+            PsDscRunAsCredential = $SqlAdministratorCredential
+        }
+
+        # Remove permission
+        xSQLServerAlwaysOnPermission RemoveSQLConfigureAlwaysOnPermissionHealthDetectionAccount
+        {
+            Ensure = "Absent"
+            NodeName = $Node.NodeName
+            InstanceName = $Node.SqlInstanceName
+            Principal = "NT AUTHORITY\SYSTEM" 
+            Permission = "ALTER ANY AVAILABILITY GROUP","VIEW SERVER STATE"
+
+            PsDscRunAsCredential = $SqlAdministratorCredential
+
+            DependsOn = "[xSQLServerAlwaysOnPermission]SQLConfigureAlwaysOnPermissionHealthDetectionAccount"
+        }
     }
 }
 

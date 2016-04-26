@@ -1,4 +1,5 @@
-﻿$ConfigData = @{
+﻿
+$ConfigData = @{
     AllNodes = @(
         @{
             NodeName= "*"
@@ -32,7 +33,7 @@ Configuration SQLAlwaysOnNodeConfig
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName xSqlServerAlwaysOn -ModuleVersion 1.0.0.0
 
-    Node $AllNodes.Where{ $_.Role -eq "PrimaryReplica" }.NodeName
+    Node $AllNodes.Where{$_.Role -eq "PrimaryReplica" }.NodeName
     {
         xSQLServerAlwaysOnAvailabilityGroup AvailabilityGroupForSynchronousCommitAndAutomaticFailover
         {
@@ -46,47 +47,38 @@ Configuration SQLAlwaysOnNodeConfig
             PsDscRunAsCredential = $SqlAdministratorCredential
         }
 
-        xSQLServerAlwaysOnAvailabilityGroup AvailabilityGroupForAsynchronousCommitAndManualFailover
+        xSQLServerAlwaysOnAvailabilityGroupListner AvailabilityGroupForSynchronousCommitAndAutomaticFailoverListner
         {
             Ensure = "Present"
             NodeName = $Node.NodeName
             InstanceName = $Node.SqlInstanceName
-            Name = "AvailabilityGroup-02"
-            AvailabilityMode = 'AsynchronousCommit'
-            FailoverMode = 'Manual'
-
-            PsDscRunAsCredential = $SqlAdministratorCredential
-        }
-
-        # Remove availability groups which was added above
-
-        xSQLServerAlwaysOnAvailabilityGroup RemoveAvailabilityGroup
-        {
-            Ensure = "Absent"
-            NodeName = $Node.NodeName
-            InstanceName = $Node.SqlInstanceName
+            AvailabilityGroup = "AG-01"
             Name = "AG-01"
+            IpAddress = "192.168.0.73/255.255.255.0"
+            Port = 5304
 
             PsDscRunAsCredential = $SqlAdministratorCredential
             
             DependsOn = "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroupForSynchronousCommitAndAutomaticFailover"
         }
-
-        xSQLServerAlwaysOnAvailabilityGroup RemoveAvailabilityGroup
-        {
-            Ensure = "Absent"
-            NodeName = $Node.NodeName
-            InstanceName = $Node.SqlInstanceName
-            Name = "AvailabilityGroup-02"
-
-            PsDscRunAsCredential = $SqlAdministratorCredential
-
-            DependsOn = "[xSQLServerAlwaysOnAvailabilityGroup]AvailabilityGroupForAsynchronousCommitAndManualFailover"
-        }
     }
 
     Node $AllNodes.Where{ $_.Role -eq "SecondaryReplica" }.NodeName
     {         
+        xSQLServerAlwaysOnAvailabilityGroupReplica SQLAddSecondaryReplicaToAvailabilityGroupForSynchronousCommitAndAutomaticFailover
+        {
+            AvailabilityGroup = "AG-01"
+            NodeName = $Node.NodeName
+            InstanceName = $Node.SqlInstanceName
+            PrimaryReplicaInstanceName = $AllNodes.Where{$_.Role -eq "PrimaryReplica" }.SqlInstanceName
+            PrimaryReplicaNodeName = $AllNodes.Where{$_.Role -eq "PrimaryReplica" }.NodeName
+            Ensure = "Present"
+            AvailabilityMode = "SynchronousCommit"
+            FailoverMode = "Automatic"
+            Timeout = 600
+
+            PsDscRunAsCredential = $SqlAdministratorCredential
+        }
     }
 }
 
