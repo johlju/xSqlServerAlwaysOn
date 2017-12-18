@@ -1,8 +1,8 @@
 # xSqlServerAlwaysOn
 PowerShell DSC module for configure SQL Server Always On
 
-**THIS MODULE IS OBSOLETE**  This functionality has been moved to PowerShell DSC Resource Kit module [xSQLServer](https://github.com/PowerShell/xSQLServer). The functionality of the resources in xSQLServer is much more improved.
-If there is any functionality you are missing in the xSQLServer resources, please submit an [issue in xSQLServer](https://github.com/PowerShell/xSQLServer/issues)
+**THIS MODULE IS OBSOLETE**  This functionality has been moved to PowerShell DSC Resource Kit module [SqlServerDsc](https://github.com/PowerShell/SqlServerDsc). The functionality of the resources in SqlServerDsc is much more improved.
+If there is any functionality you are missing in the xSQLServer resources, please submit an [issue in SqlServerDsc](https://github.com/PowerShell/SqlServerDsc/issues)
 
 ## Resources
 * **xSQLServerAlwaysOnService** Enabled or disables Always On.
