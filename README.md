@@ -2,7 +2,7 @@
 PowerShell DSC module for configure SQL Server Always On
 
 **THIS MODULE IS OBSOLETE**  This functionality has been moved to PowerShell DSC Resource Kit module [SqlServerDsc](https://github.com/PowerShell/SqlServerDsc). The functionality of the resources in SqlServerDsc is much more improved.
-If there is any functionality you are missing in the xSQLServer resources, please submit an [issue in SqlServerDsc](https://github.com/PowerShell/SqlServerDsc/issues)
+If there is any functionality you are missing in the SqlServerDsc resources, please submit an [issue in SqlServerDsc](https://github.com/PowerShell/SqlServerDsc/issues)
 
 ## Resources
 * **xSQLServerAlwaysOnService** Enabled or disables Always On.
@@ -12,7 +12,7 @@ If there is any functionality you are missing in the xSQLServer resources, pleas
 * **xSQLServerAlwaysOnEndpointPermission** Grant or revoke permission on the endpoint.
 * **xSQLServerAlwaysOnAvailabilityGroup** Create or remove an availability group on the primary replica (also creates the primary replica).
 * **xSQLServerAlwaysOnAvailabilityGroupListner** Create or remove an availability group listner.
-* **xSQLServerAlwaysOnAvailabilityGroupReplica** Create or remove an availability group secondary replica. 
+* **xSQLServerAlwaysOnAvailabilityGroupReplica** Create or remove an availability group secondary replica.
 
 ## xSQLServerAlwaysOnService
 * **InstanceName** The SQL Server instance name.
